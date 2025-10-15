@@ -1,5 +1,4 @@
 import pathlib
-from decimal import Decimal
 from fastapi import FastAPI
 from src.repositories.csv_repository import CSVRepository
 from src.repositories.interface import IPriceRepository
@@ -30,6 +29,7 @@ price_service = PriceService(repository=price_repository)
 #inject the service instance into router dependency. This is to allow the service to be singleton, but in real-world would be a factory
 def get_service_singleton_wrapper():
     return price_service
+
 app.dependency_overrides[get_price_service] = get_service_singleton_wrapper
 
 app.include_router(router, prefix="/api/v1")
