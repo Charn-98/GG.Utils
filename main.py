@@ -12,9 +12,6 @@ DATA_DIRECTORY = pathlib.Path(__file__).parent / "data"
 SELLING_PRICES_FILE = f"{DATA_DIRECTORY}/verkoopprijzen.csv"
 PROMOTIONS_FILE = f"{DATA_DIRECTORY}/promoties.csv"
 
-#not sure about this, apparently it is a good practise to set Decimal context to be globally consistent
-Decimal.setcontext(Decimal('0') + Decimal('1e-2'))
-
 #initialize api
 app = FastAPI(
     title="Gall & Gall microservice",
@@ -31,11 +28,13 @@ price_repository: IPriceRepository = CSVRepository(
 #initialize service, inject repository
 price_service = PriceService(repository=price_repository)
 #inject the service instance into router dependency. This is to allow the service to be singleton, but in real-world would be a factory
-app.dependency_overrides[get_price_service] = price_service
+def get_service_singleton_wrapper():
+    return price_service
+app.dependency_overrides[get_price_service] = get_service_singleton_wrapper
 
 app.include_router(router, prefix="/api/v1")
 
 if __name__ == "__main__":
-    #run: uvicorn main:app --reload
+    #run: python -m uvicorn main:app --reload
     print(f"Starting service. Data files expected at: {DATA_DIRECTORY.resolve()}")
     uvicorn.run(app, host="0.0.0.0", port=8000)

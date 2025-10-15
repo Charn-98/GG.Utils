@@ -9,7 +9,7 @@ from typing import List
 
 router = APIRouter()
 @router.get(
-    "/lowest-price/{item_number}",
+    "/lowest-price/{article_number}",
     response_model=LowestPriceResult,
     summary="Get the lowest price for a specific item in the last 30 days"
 )
@@ -23,7 +23,7 @@ def get_lowest_price_for_item(
     Fetches the lowest price and related information for the given item
     over the 30 days preceding the 'today' date.
     """
-    result = price_service.calculate_lowest_price_30_days(article_number, today)
+    result = price_service.calculate_lowest_price_x_days(article_number, today)
 
     if result.lowest_price == Decimal('0.00') and article_number not in price_service.get_all_article_numbers():
          raise HTTPException(status_code=404, detail=f"Item number '{article_number}' not found in data history.")

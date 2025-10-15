@@ -123,20 +123,19 @@ class CSVRepository(IPriceRepository):
 
             for i, row in enumerate(reader):
                 try:
-                    promption_start_date = self._parse_date(row['StartDatumPromotie'], DATE_FORMATS)
-                    promption_end_date = self._parse_date(row['EindDatumPromotie'], DATE_FORMATS)
+                    promotion_start_date = self._parse_date(row['StartDatumPromotie'], DATE_FORMATS)
+                    promotion_end_date = self._parse_date(row['EindDatumPromotie'], DATE_FORMATS)
                     article_date = self._parse_date(row['ArtikelDatum'], DATE_FORMATS)
 
-                    if not all([article_date, promption_start_date, promption_end_date]):
+                    if not all([article_date, promotion_start_date, promotion_end_date]):
                          raise ValueError("Missing date fields.")
 
                     record = PromotionRecord(
                         article_number=row['ArtikelNummer'],
                         article_date=article_date,
-                        promption_start_date=promption_start_date,
-                        promption_end_date=promption_end_date,
-                        price=Decimal(row['Prijs']),
-                        campaign_period=row['ActiePeriode'],
+                        promotion_start_date=promotion_start_date,
+                        promotion_end_date=promotion_end_date,
+                        compaign_period=row['ActiePeriode'],
                         promotion_number=row['PromotieNummer'],
                         promotion_description=row['PromotieOmschrijving'],
                         status=row['Status'],
@@ -163,20 +162,20 @@ class CSVRepository(IPriceRepository):
         """Fetches all regular selling price records with pagination. Not paginated"""
         return self._selling_prices
 
-    def get_all_promotions(self) -> List[PromotionRecord]:
+    def get_all_promotion_prices(self) -> List[PromotionRecord]:
         """Fetches all promotion records with pagination. Not paginated"""
         return self._promotions
 
-    def get_selling_prices_by_item(self, item_number: str) -> List[SellingRecord]:
+    def get_selling_price_by_article(self, article_number: str) -> List[SellingRecord]:
         """Fetches regular selling price records for a specific item number."""
         return [
             record for record in self._selling_prices
-            if record.item_number == item_number
+            if record.article_number == article_number
         ]
 
-    def get_promotions_by_item(self, item_number: str) -> List[PromotionRecord]:
+    def get_promotion_price_by_article(self, article_number: str) -> List[PromotionRecord]:
         """Fetches promotion records for a specific item number."""
         return [
             record for record in self._promotions
-            if record.item_number == item_number
+            if record.article_number == article_number
         ]

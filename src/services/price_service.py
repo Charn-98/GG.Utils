@@ -5,6 +5,7 @@ from src.models.promotion_record import PromotionRecord
 from datetime import date, timedelta
 from src.models.dto.lowest_price_result import LowestPriceResult
 from decimal import Decimal
+import sys
 
 class PriceService:
     """
@@ -35,8 +36,8 @@ class PriceService:
         self._all_selling_prices = self._repository.get_all_selling_prices()
         self._all_promotions = self._repository.get_all_promotion_prices()
 
-        selling_article_numbers = {r.item_number for r in self._all_selling_prices}
-        promotion_article_numbers = {r.item_number for r in self._all_promotions}
+        selling_article_numbers = {r.article_number for r in self._all_selling_prices}
+        promotion_article_numbers = {r.article_number for r in self._all_promotions}
         #union the item numbers for a unique item/article list
         self._all_article_numbers = selling_article_numbers.union(promotion_article_numbers)
 
@@ -44,12 +45,12 @@ class PriceService:
         """Returns a set of all unique article/item numbers found in the data."""
         return self._all_article_numbers or set()
 
-    def calculate_lowest_price_x_days(self, item_number: str, today: date) -> LowestPriceResult:
+    def calculate_lowest_price_x_days(self, article_number: str, today: date) -> LowestPriceResult:
         """
         Calculates the lowest price for a single item over the last X days.
 
         Args:
-            item_number: The item identifier.
+            article_number: The item identifier.
             today: The date to calculate the lookback period from (e.g., date.today()).
 
         Returns:
@@ -57,12 +58,13 @@ class PriceService:
         """
         x_days_ago = today - timedelta(days=self.LAST_X_DAYS)
 
-        lowest_price = None
-        best_price_date = today
+        lowest_price = sys.float_info.max
+        best_price_valid_from = today
+        best_price_valid_to = today
         is_promo = False
 
         selling_prices = [
-            r for r in self._all_selling_prices if r.item_number == item_number
+            r for r in self._all_selling_prices if r.article_number == article_number
         ]
 
         for record in selling_prices:
@@ -74,13 +76,15 @@ class PriceService:
             if is_active_within_window:
                 if record.price < lowest_price:
                     lowest_price = record.price
-                    best_price_date = record.price_start_date
+                    best_price_valid_from = record.price_start_date
+                    best_price_valid_to = record.price_end_date
                     is_promo = False
 
         promotions = [
-            p for p in self._all_promotions if p.item_number == item_number
+            p for p in self._all_promotions if p.article_number == article_number
         ]
 
+        #if we find a promotion that is less than the selling price, then we update the values
         for record in promotions:
             is_active_within_window = (
                 record.promotion_start_date <= today and
@@ -93,22 +97,25 @@ class PriceService:
             if is_active_within_window and is_valid_status:
                 if record.sale_price < lowest_price:
                     lowest_price = record.sale_price
-                    best_price_date = record.promotion_start_date
+                    best_price_valid_from = record.promotion_start_date
+                    best_price_valid_to = record.promotion_end_date
                     is_promo = True
 
-        if not lowest_price:
+        if lowest_price < 0:
             return LowestPriceResult(
-                item_number=item_number,
+                article_number=article_number,
                 lowest_price=Decimal('0.00'),
                 is_promo=False,
-                valid_from=today
+                valid_from=today,
+                valid_to=today
             )
 
         return LowestPriceResult(
-            item_number=item_number,
+            article_number=article_number,
             lowest_price=lowest_price,
             is_promo=is_promo,
-            valid_from=best_price_date
+            valid_from=best_price_valid_from,
+            valid_to=best_price_valid_to
         )
 
 
@@ -124,7 +131,7 @@ class PriceService:
         """
         results: List[LowestPriceResult] = []
 
-        for article_number in self.get():
+        for article_number in self.get_all_article_numbers():
             result = self.calculate_lowest_price_x_days(article_number, today)
             results.append(result)
 
