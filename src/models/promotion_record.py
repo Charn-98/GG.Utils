@@ -4,7 +4,7 @@ from decimal import Decimal
 
 class PromotionRecord(BaseRecord):
     """Record for the promotional price"""
-    compaign_period: date
+    compaign_period: int
     promotion_number: int
     promotion_description: str
     promotion_start_date: date

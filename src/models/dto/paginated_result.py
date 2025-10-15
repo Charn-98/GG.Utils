@@ -6,7 +6,7 @@ from pydantic import BaseModel
 T = TypeVar('T')
 
 @dataclass(frozen=True)
-class PaginatedResult(Generic[T], BaseModel):
+class PaginatedResult(BaseModel, Generic[T]):
     """General model for paginated data"""
     data: List[T]
     total_count: int
