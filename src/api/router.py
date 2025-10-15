@@ -26,7 +26,7 @@ def get_lowest_price_for_item(
     result = price_service.calculate_lowest_price_x_days(article_number, today)
 
     if result.lowest_price == Decimal('0.00') and article_number not in price_service.get_all_article_numbers():
-         raise HTTPException(status_code=404, detail=f"Item number '{article_number}' not found in data history.")
+         raise HTTPException(status_code=404, detail=f"Article number '{article_number}' not found in data history.")
 
     return result
 

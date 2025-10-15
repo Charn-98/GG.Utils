@@ -38,11 +38,11 @@ class PriceService:
 
         selling_article_numbers = {r.article_number for r in self._all_selling_prices}
         promotion_article_numbers = {r.article_number for r in self._all_promotions}
-        #union the item numbers for a unique item/article list
+        #union the Article numbers for a unique item/article list
         self._all_article_numbers = selling_article_numbers.union(promotion_article_numbers)
 
     def get_all_article_numbers(self) -> Set[str]:
-        """Returns a set of all unique article/item numbers found in the data."""
+        """Returns a set of all unique article/Article numbers found in the data."""
         return self._all_article_numbers or set()
 
     def calculate_lowest_price_x_days(self, article_number: str, today: date) -> LowestPriceResult:

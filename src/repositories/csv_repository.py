@@ -167,14 +167,14 @@ class CSVRepository(IPriceRepository):
         return self._promotions
 
     def get_selling_price_by_article(self, article_number: str) -> List[SellingRecord]:
-        """Fetches regular selling price records for a specific item number."""
+        """Fetches regular selling price records for a specific Article number."""
         return [
             record for record in self._selling_prices
             if record.article_number == article_number
         ]
 
     def get_promotion_price_by_article(self, article_number: str) -> List[PromotionRecord]:
-        """Fetches promotion records for a specific item number."""
+        """Fetches promotion records for a specific Article number."""
         return [
             record for record in self._promotions
             if record.article_number == article_number
