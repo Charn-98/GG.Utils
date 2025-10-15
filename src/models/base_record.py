@@ -1,7 +1,7 @@
-from dataclasses import dataclass
 from datetime import date
+from pydantic import BaseModel
 
-class BaseRecord:
+class BaseRecord(BaseModel):
     article_number: str
     article_date: date
 

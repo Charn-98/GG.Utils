@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from src.models.base import BaseRecord
+from models.base_record import BaseRecord
 from datetime import date
 from decimal import Decimal
 

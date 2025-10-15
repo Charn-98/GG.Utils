@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from src.models.base import BaseRecord
 from datetime import date
 from decimal import Decimal
+from pydantic import BaseModel
 
 @dataclass(frozen=True)
-class LowestPriceResult():
+class LowestPriceResult(BaseModel):
     """Output model for API response for a single item"""
     article_number: str
     lowest_price: Decimal

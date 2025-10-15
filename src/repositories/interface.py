@@ -2,20 +2,21 @@ from abc import ABC, abstractmethod
 from typing import List
 from src.models.selling_record import SellingRecord
 from src.models.promotion_record import PromotionRecord
-from src.models.dto.paginated_result import PaginatedResult
+
 
 class IPriceRepository(ABC):
     """Interface defining the contract for data access.
-    The service layer will only interact with this interface which inforces decoupling
+    The service layer will only interact with this interface which inforces
+    decoupling
     """
 
     @abstractmethod
-    def get_all_selling_prices(self, page_size: int, page_number: int) -> PaginatedResult[SellingRecord]:
+    def get_all_selling_prices(self) -> List[SellingRecord]:
         """Fetches all regular selling prices with pagination"""
         pass
 
     @abstractmethod
-    def get_all_promotion_prices(self, page_size: int, page_number: int) -> PaginatedResult[PromotionRecord]:
+    def get_all_promotion_prices(self) -> List[PromotionRecord]:
         """Fetches all promptional selling prices with pagination"""
         pass
 
