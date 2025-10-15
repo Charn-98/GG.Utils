@@ -1,5 +1,4 @@
 from src.services.price_service import PriceService
-from src.repositories.interface import IPriceRepository
 
 def get_price_service() -> PriceService:
     """

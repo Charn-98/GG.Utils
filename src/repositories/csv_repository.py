@@ -1,14 +1,12 @@
 ####goal: load csv files once on startup so that the get & getall methods can read from memory.
 import csv
-from typing import List, Dict, Optional
+from typing import List, Optional
 from decimal import Decimal
 from datetime import datetime, date
-import math
 import os
 from src.repositories.interface import IPriceRepository
 from src.models.promotion_record import PromotionRecord
 from src.models.selling_record import SellingRecord
-from src.models.dto.paginated_result import PaginatedResult
 
 class CSVRepository(IPriceRepository):
     """
