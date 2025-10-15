@@ -35,6 +35,5 @@ app.dependency_overrides[get_price_service] = get_service_singleton_wrapper
 app.include_router(router, prefix="/api/v1")
 
 if __name__ == "__main__":
-    #run: python -m uvicorn main:app --reload
     print(f"Starting service. Data files expected at: {DATA_DIRECTORY.resolve()}")
     uvicorn.run(app, host="0.0.0.0", port=8000)
