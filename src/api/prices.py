@@ -11,9 +11,9 @@ router = APIRouter()
 @router.get(
     "/lowest-price/{article_number}",
     response_model=LowestPriceResult,
-    summary="Get the lowest price for a specific item in the last 30 days"
+    summary="Get the lowest price for a specific item in the last 30 days",
+    tags=["Prices"]
 )
-
 def get_lowest_price_for_item(
     article_number: str,
     price_service: PriceService = Depends(get_price_service),
@@ -33,7 +33,8 @@ def get_lowest_price_for_item(
 @router.get(
     "/lowest-prices/all",
     response_model=PaginatedResult[LowestPriceResult],
-    summary="Get lowest prices for all items with pagination"
+    summary="Get lowest prices for all items with pagination",
+    tags=["Prices"]
 )
 def get_all_lowest_prices(
     price_service: PriceService = Depends(get_price_service),

@@ -8,7 +8,7 @@ from src.repositories.interface import IPriceRepository
 from src.models.promotion_record import PromotionRecord
 from src.models.selling_record import SellingRecord
 
-class CSVRepository(IPriceRepository):
+class PriceRepository(IPriceRepository):
     """
     All data is loaded into memory on startup for quick lookups.
     This is hopefully mimicking a database cache layer
